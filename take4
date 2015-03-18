@@ -1,0 +1,171 @@
+import pygame, sys
+import math
+from pygame.locals import *
+from aux_functions2 import *
+import random
+import time
+
+pygame.init()
+
+
+FPS = 30    # frames per second setting
+fpsClock = pygame.time.Clock()
+
+SPRITE_WIDTH = 133
+SPRITE_HEIGHT = 100
+
+
+WINDOW_WIDTH = 1200
+WINDOW_HEIGHT = 600
+
+ARENA_WIDTH = 800
+ARENA_HEIGHT = 500
+
+ARENA_RCx = (WINDOW_WIDTH-ARENA_WIDTH)/2 #Right corner of the arena (xvalue)
+ARENA_RCy = (WINDOW_HEIGHT-ARENA_HEIGHT)/2 #Right corner of the arena (yvalue)
+
+DISPLAYSURF = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT), 0, 0)   # set up the window
+pygame.display.set_caption('Animation')
+
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+
+p1Img = pygame.image.load('sprite1bru.png')
+p1eImg = pygame.image.load('extendedspriteb.png')
+p1lImg = pygame.image.load('sprite1brul.png')
+p1elImg = pygame.image.load('extendedspritebl.png')
+
+p2Img = pygame.image.load('sprite2bru.png')
+p2eImg = pygame.image.load('extendedsprite2b.png')
+p2lImg = pygame.image.load('sprite2brul.png')
+p2elImg = pygame.image.load('extendedsprite2bl.png')
+
+length = 100
+factory = math.sin(40)
+factorx = math.cos(40)
+
+innertlx = ARENA_RCx + length*-factorx        #inner top left x
+innertly = ARENA_RCy + length*factory
+innertrx = ARENA_RCx + ARENA_WIDTH + length*factorx
+innertry = ARENA_RCy + length*factory
+innerllx = ARENA_RCx + ARENA_WIDTH + length*factorx
+innerlly = ARENA_RCy + ARENA_HEIGHT + length*-factory
+innerlrx = ARENA_RCx + length*-factorx
+innerlry = ARENA_RCy + ARENA_HEIGHT+ length*-factory
+
+line_width = 2
+
+p1 = Player(ARENA_RCx+ length*-factorx,ARENA_RCy+ length*+factory,"right")
+p2 = Player(ARENA_RCx+ARENA_WIDTH-SPRITE_WIDTH+ length*factorx,ARENA_RCy+ARENA_HEIGHT-SPRITE_HEIGHT+ length*-factory,"left")
+
+new_round = True
+
+
+pygame.key.set_repeat(10,10)
+
+while True:
+# the main game loop
+
+    DISPLAYSURF.fill(BLACK)
+
+    pygame.draw.line(DISPLAYSURF, WHITE, (ARENA_RCx, ARENA_RCy), (ARENA_RCx + ARENA_WIDTH, ARENA_RCy ), line_width) #TOP LINE
+    pygame.draw.line(DISPLAYSURF, WHITE, (ARENA_RCx, ARENA_RCy + ARENA_HEIGHT), (ARENA_RCx + ARENA_WIDTH, ARENA_RCy + ARENA_HEIGHT ), line_width) #BOTTOM LINE
+    pygame.draw.line(DISPLAYSURF, WHITE, (ARENA_RCx, ARENA_RCy), (ARENA_RCx , ARENA_RCy +ARENA_HEIGHT), line_width) #LEFT LINE
+    pygame.draw.line(DISPLAYSURF, WHITE, (ARENA_RCx + ARENA_WIDTH, ARENA_RCy + ARENA_HEIGHT), (ARENA_RCx + ARENA_WIDTH, ARENA_RCy ), line_width) #RIGHT LINE
+    
+    pygame.draw.line(DISPLAYSURF, WHITE, (ARENA_RCx, ARENA_RCy), (ARENA_RCx + length*-factorx, ARENA_RCy + length*factory), line_width)      #UPPER LEFT DIAG
+    pygame.draw.line(DISPLAYSURF, WHITE, (ARENA_RCx+ARENA_WIDTH, ARENA_RCy), (ARENA_RCx + ARENA_WIDTH + length*factorx, ARENA_RCy + length*factory), line_width) #UPPER RIGHT DIAG
+    pygame.draw.line(DISPLAYSURF, WHITE, (ARENA_RCx, ARENA_RCy+ ARENA_HEIGHT), (ARENA_RCx + length*-factorx, ARENA_RCy + ARENA_HEIGHT+ length*-factory), line_width)#LOWER RIGHT DIAG
+    pygame.draw.line(DISPLAYSURF, WHITE, (ARENA_RCx+ARENA_WIDTH, ARENA_RCy + ARENA_HEIGHT), (ARENA_RCx + ARENA_WIDTH + length*factorx, ARENA_RCy+ ARENA_HEIGHT + length*-factory), line_width)
+
+    pygame.draw.line(DISPLAYSURF, WHITE, (ARENA_RCx + ARENA_WIDTH + length*factorx, ARENA_RCy + length*factory), (ARENA_RCx + length*-factorx, ARENA_RCy + length*factory), line_width)      #UPPER LEFT DIAG
+    pygame.draw.line(DISPLAYSURF, WHITE, (ARENA_RCx + ARENA_WIDTH + length*factorx, ARENA_RCy+ ARENA_HEIGHT + length*-factory), (ARENA_RCx + ARENA_WIDTH + length*factorx, ARENA_RCy + length*factory), line_width) #UPPER RIGHT DIAG
+    pygame.draw.line(DISPLAYSURF, WHITE, (ARENA_RCx + ARENA_WIDTH + length*factorx, ARENA_RCy+ ARENA_HEIGHT + length*-factory), (ARENA_RCx + length*-factorx, ARENA_RCy + ARENA_HEIGHT+ length*-factory), line_width)#LOWER RIGHT DIAG
+    pygame.draw.line(DISPLAYSURF, WHITE, (ARENA_RCx + length*-factorx, ARENA_RCy + length*factory), (ARENA_RCx + length*-factorx, ARENA_RCy + ARENA_HEIGHT- length*factory), line_width)
+    
+    handle_keys(p1, p2,innertlx,innertly,innertrx,innerlly,SPRITE_WIDTH,SPRITE_HEIGHT)
+     
+    if p1.extended > 0 and p1.frozen < 0:
+        if p1.image == "right":
+            DISPLAYSURF.blit(p1eImg, (p1.x, p1.y))
+        else:
+            DISPLAYSURF.blit(p1elImg, (p1.x-30, p1.y))
+        p1.extended -= 1
+    else:    
+        if p1.image == "right":
+            DISPLAYSURF.blit(p1Img, (p1.x, p1.y))
+        else:
+            DISPLAYSURF.blit(p1lImg, (p1.x, p1.y))
+
+    if p2.extended > 0 and p2.frozen < 0:
+        if p2.image == "right":
+            DISPLAYSURF.blit(p2eImg, (p2.x, p2.y))
+        else:
+            DISPLAYSURF.blit(p2elImg, (p2.x-30, p2.y))
+        p2.extended -= 1
+    else:    
+        if p2.image == "right":
+            DISPLAYSURF.blit(p2Img, (p2.x, p2.y))
+        else:
+            DISPLAYSURF.blit(p2lImg, (p2.x, p2.y))
+
+    p1.frozen-=1
+    p2.frozen-=1
+
+    if p1.extended == 1:
+        p1.frozen = 2
+    if p2.extended == 1:
+        p2.frozen = 2
+        
+    
+
+    handle_movements(p1)
+    handle_movements(p2)
+
+    p1.set_regions(p2)
+    p2.set_regions(p1)
+    
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            pygame.quit()
+            sys.exit()
+
+
+    if p1.lose:
+        gameOverFont = pygame.font.Font('freesansbold.ttf', 150)
+        gameSurf = gameOverFont.render('P2 Wins', True, WHITE)
+        overSurf = gameOverFont.render('Wins', True, WHITE)
+        gameRect = gameSurf.get_rect()
+        overRect = overSurf.get_rect()
+
+        gameRect.midtop = (WINDOW_WIDTH / 2, 10)
+
+        overRect.midtop = (WINDOW_WIDTH / 2, gameRect.height + 10 + 25)
+        DISPLAYSURF.blit(gameSurf, gameRect)
+        pygame.display.update()
+        time.sleep(5)
+        pygame.quit()
+        sys.exit()
+
+    if p2.lose:
+        gameOverFont = pygame.font.Font('freesansbold.ttf', 150)
+        gameSurf = gameOverFont.render('P1 Wins', True, WHITE)
+        overSurf = gameOverFont.render('Wins', True, WHITE)
+        gameRect = gameSurf.get_rect()
+        overRect = overSurf.get_rect()
+
+        gameRect.midtop = (WINDOW_WIDTH / 2, 10)
+
+        overRect.midtop = (WINDOW_WIDTH / 2, gameRect.height + 10 + 25)
+        DISPLAYSURF.blit(gameSurf, gameRect)
+        pygame.display.update()
+        time.sleep(5)
+        pygame.quit()
+        sys.exit()
+        
+        
+    p1.set_false()
+    p2.set_false()
+    pygame.display.update()
+    fpsClock.tick(FPS)
+

@@ -1,0 +1,10 @@
+def draw_arena():
+    pygame.draw.line(DISPLAYSURF, WHITE, (ARENA_RCx, ARENA_RCy), (ARENA_RCx + ARENA_WIDTH, ARENA_RCy ), line_width) #TOP LINE
+    pygame.draw.line(DISPLAYSURF, WHITE, (ARENA_RCx, ARENA_RCy + ARENA_HEIGHT), (ARENA_RCx + ARENA_WIDTH, ARENA_RCy + ARENA_HEIGHT ), line_width) #BOTTOM LINE
+    pygame.draw.line(DISPLAYSURF, WHITE, (ARENA_RCx, ARENA_RCy), (ARENA_RCx , ARENA_RCy +ARENA_HEIGHT), line_width) #LEFT LINE
+    pygame.draw.line(DISPLAYSURF, WHITE, (ARENA_RCx + ARENA_WIDTH, ARENA_RCy + ARENA_HEIGHT), (ARENA_RCx + ARENA_WIDTH, ARENA_RCy ), line_width) #RIGHT LINE
+    
+    pygame.draw.line(DISPLAYSURF, WHITE, (ARENA_RCx, ARENA_RCy), (ARENA_RCx + length*-factorx, ARENA_RCy + length*factory), line_width)      #UPPER LEFT DIAG
+    pygame.draw.line(DISPLAYSURF, WHITE, (ARENA_RCx+ARENA_WIDTH, ARENA_RCy), (ARENA_RCx + ARENA_WIDTH + length*factorx, ARENA_RCy + length*factory), line_width)
+    pygame.draw.line(DISPLAYSURF, WHITE, (ARENA_RCx, ARENA_RCy), (ARENA_RCx + length*-factorx, ARENA_RCy + length*factory), line_width)
+    pygame.draw.line(DISPLAYSURF, WHITE, (ARENA_RCx, ARENA_RCy), (ARENA_RCx + length*-factorx, ARENA_RCy + length*factory), line_width)

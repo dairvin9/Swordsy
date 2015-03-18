@@ -1,0 +1,55 @@
+import pygame, sys
+import math
+from pygame.locals import *
+from drawing_functions import *
+pygame.init()
+
+
+FPS = 30    # frames per second setting
+fpsClock = pygame.time.Clock()
+
+WINDOW_WIDTH = 1200
+WINDOW_HEIGHT = 600
+
+ARENA_WIDTH = 800
+ARENA_HEIGHT = 500
+
+ARENA_RCx = (WINDOW_WIDTH-ARENA_WIDTH)/2 #Right corner of the arena (xvalue)
+ARENA_RCy = (WINDOW_HEIGHT-ARENA_HEIGHT)/2 #Right corner of the arena (yvalue)
+
+DISPLAYSURF = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT), 0, 0)   # set up the window
+pygame.display.set_caption('Animation')
+
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+p1Img = pygame.image.load('cat.png')
+
+length = 100
+p1x = 10
+p1y = 10
+
+factory = math.sin(40)
+factorx = math.cos(40)
+line_width = 2
+
+
+while True:
+# the main game loop
+
+    DISPLAYSURF.fill(BLACK)
+    #pygame.draw.rect(DISPLAYSURF, WHITE, (12,12,100,100))#THis works but is currently unwanted
+
+    draw_arena(DISPLAYSURF,WHITE,ARENA_WIDTH,ARENA_HEIGHT,ARENA_RCx,ARENA_RCy,factorx,factory,line_width)   #THE SECOND VARIABLE CAN BE ANY COLOR
+    #if direction = 8:
+
+    #DISPLAYSURF.blit(p1Img, (p1x, p1y))
+
+    for event in pygame.event.get():
+
+        if event.type == QUIT:                          #Exits program
+            pygame.quit()
+            sys.exit()
+
+    pygame.display.update()
+    fpsClock.tick(FPS)
+
